@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이상 심리의 원인 퀴즈: 최종 수정</title>
+    <style>
+        body { font-family: 'Malgun Gothic', '맑은 고딕', sans-serif; line-height: 1.6; padding: 20px; background-color: #f4f7f6; }
+        .quiz-container { max-width: 900px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
+        h1 { text-align: center; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-bottom: 30px; }
+        .quiz-section { margin-bottom: 40px; }
+        h2 { color: #e74c3c; border-bottom: 1px solid #dcdcdc; padding-bottom: 5px; margin-bottom: 20px; }
+        .question-box { margin-bottom: 20px; padding: 15px; border: 1px solid #dcdcdc; border-radius: 8px; background-color: #fcfcfc; }
+        .question-title { font-weight: bold; margin-bottom: 10px; font-size: 1.1em; color: #34495e; }
+        input[type="text"] { padding: 8px; border: 1px solid #bdc3c7; border-radius: 4px; width: 60%; max-width: 300px; margin-right: 10px; }
+        .fill-in-text { font-weight: bold; color: #e74c3c; background-color: #ffe0e0; padding: 2px 5px; border-radius: 3px; }
+        button { padding: 8px 15px; background-color: #2ecc71; color: white; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.3s; }
+        button:hover { background-color: #27ae60; }
+        .result { margin-top: 10px; padding: 10px; border-radius: 4px; display: none; }
+        .correct { background-color: #e6ffe6; color: #27ae60; border: 1px solid #27ae60; }
+        .incorrect { background-color: #ffe6e6; color: #c0392b; border: 1px solid #c0392b; }
+        .warning { background-color: #fcf8e3; color: #8a6d3b; border: 1px solid #faebcc; }
+        .answer-text { font-weight: bold; }
+    </style>
+    <script>
+        // **수정된 정규화 함수: 모든 공백 문자(\s+)만 제거하고 소문자 변환**
+        function normalizeAnswer(answer) {
+            if (!answer) return "";
+            // 띄어쓰기만 제거 (예: "정보 처리" -> "정보처리")
+            return answer.replace(/\s+/g, '').toLowerCase(); 
+        }
+
+        // 띄어쓰기 제거 후 정답 비교
+        function checkAnswer(qNum, correctAnswers) {
+            const inputElement = document.getElementById('q' + qNum + 'input');
+            const resultElement = document.getElementById('q' + qNum + 'result');
+            
+            const rawUserValue = inputElement.value.trim();
+            
+            // 입력값이 비어있을 때 Warning 처리
+            if (rawUserValue === '') {
+                resultElement.style.display = 'block';
+                resultElement.className = 'result warning';
+                resultElement.innerHTML = '⚠️ **입력값이 비어 있습니다. 정답을 입력해 주세요.**';
+                return;
+            }
+            
+            const userAnswer = normalizeAnswer(rawUserValue);
+            
+            // 정답을 배열로 만들어 정규화
+            const correctArray = Array.isArray(correctAnswers)
+                ? correctAnswers.map(normalizeAnswer)
+                : [normalizeAnswer(correctAnswers)];
+
+            // 사용자에게 보여줄 정답은 배열의 첫 번째 요소 사용
+            const displayAnswer = Array.isArray(correctAnswers) ? correctAnswers[0] : correctAnswers;
+
+            resultElement.style.display = 'block';
+
+            if (correctArray.includes(userAnswer)) {
+                resultElement.className = 'result correct';
+                resultElement.innerHTML = '✅ **정답입니다!**';
+            } else {
+                resultElement.className = 'result incorrect';
+                resultElement.innerHTML = '❌ **오답입니다.** 정답: <span class="answer-text">' + displayAnswer + '</span>';
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <div class="quiz-container">
+        <h1>🧠 이상 심리의 원인 퀴즈 (총 14문제)</h1>
+
+        <div class="quiz-section">
+            <h2>I. 단답형 문제 (관점/모델 명칭, 7문제)</h2>
+            
+            <div class="question-box">
+                <div class="question-title">1. 이상 심리가 무의식적 내적 갈등이 상징적으로 나타난 것이라고 보는 관점은?</div>
+                <input type="text" id="q1input" placeholder="정답 입력 (띄어쓰기 무관)">
+                <button onclick="checkAnswer(1, '정신역동적 관점')">정답 확인</button>
+                <div id="q1result" class="result"></div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-title">2. 이상 행동은 학습의 영향, 즉 외부 자극과 부적절하게 연합(오학습)되어 나타난다고 보는 관점은?</div>
+                <input type="text" id="q2input" placeholder="정답 입력 (띄어쓰기 무관)">
+                <button onclick="checkAnswer(2, '행동주의적 관점')">정답 확인</button>
+                <div id="q2result" class="result"></div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-title">3. 이상적 자기와 현실적 자기의 차이, 자기실현 경향성이 부족하여 이상 심리가 나타난다고 보는 관점은?</div>
+                <input type="text" id="q3input" placeholder="정답 입력 (띄어쓰기 무관)">
+                <button onclick="checkAnswer(3, '인본주의적 관점')">정답 확인</button>
+                <div id="q3result" class="result"></div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-title">4. 이상 심리가 생물학적 취약성과 환경적 스트레스 간의 상호작용으로 인해 발생한다고 설명하는 모델은?</div>
+                <input type="text" id="q4input" placeholder="정답 입력 (띄어쓰기 무관)">
+                <button onclick="checkAnswer(4, '취약성-스트레스 모델')">정답 확인</button>
+                <div id="q4result" class="result"></div>
+            </div>
+            
+            <div class="question-box">
+                <div class="question-title">5. 이상 심리가 외부 환경보다 내적 정보 처리 과정의 문제(왜곡)로 발생한다고 보는 관점은?</div>
+                <input type="text" id="q5input" placeholder="정답 입력 (띄어쓰기 무관)">
+                <button onclick="checkAnswer(5, '인지주의적 관점')">정답 확인</button>
+                <div id="q5result" class="result"></div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-title">6. 사회·문화적 규범에 의한 사회문화적 상호작용의 부적응에서 이상 심리가 발생한다고 보는 관점은?</div>
+                <input type="text" id="q6input" placeholder="정답 입력 (띄어쓰기 무관)">
+                <button onclick="checkAnswer(6, '사회·문화적 관점')">정답 확인</button>
+                <div id="q6result" class="result"></div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-title">7. 이상 심리의 원인을 신체적 문제를 야기하는 신경전달물질의 불균형으로 설명하는 관점은?</div>
+                <input type="text" id="q7input" placeholder="정답 입력 (띄어쓰기 무관)">
+                <button onclick="checkAnswer(7, '생물학적 관점')">정답 확인</button>
+                <div id="q7result" class="result"></div>
+            </div>
+        </div>
+
+        <div class="quiz-section">
+            <h2>II. 빈칸 채우기 문제 (개념 설명 중 빈칸, 7문제)</h2>
+            
+            <div class="question-box">
+                <div class="question-title">8. **생물학적 관점**은 이상 심리의 원인을 신체적 문제를 야기하는 ( <span class="fill-in-text">(빈칸)</span> )의 불균형으로 설명한다.</div>
+                <input type="text" id="q8input" placeholder="빈칸에 들어갈 단어 입력">
+                <button onclick="checkAnswer(8, '신경전달물질')">정답 확인</button>
+                <div id="q8result" class="result"></div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-title">9. **정신역동적 관점**에 따르면, 이상 심리는 ( <span class="fill-in-text">(빈칸)</span> )적 내적 갈등이 표면으로 상징적으로 나타난 결과이다.</div>
+                <input type="text" id="q9input" placeholder="빈칸에 들어갈 단어 입력">
+                <button onclick="checkAnswer(9, '무의식')">정답 확인</button>
+                <div id="q9result" class="result"></div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-title">10. **인지주의적 관점**은 이상 심리의 원인을 외부 환경보다는 내적 ( <span class="fill-in-text">(빈칸)</span> ) 과정의 문제로 인해 발생한다고 본다.</div>
+                <input type="text" id="q10input" placeholder="빈칸에 들어갈 단어 입력">
+                <button onclick="checkAnswer(10, '정보 처리')">정답 확인</button>
+                <div id="q10result" class="result"></div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-title">11. **생물심리사회적 관점**은 이상 심리가 ( <span class="fill-in-text">(빈칸)</span> )성과 스트레스 간의 상호작용으로 인해 발생한다고 설명한다.</div>
+                <input type="text" id="q11input" placeholder="빈칸에 들어갈 단어 입력">
+                <button onclick="checkAnswer(11, ['취약성', '취약'])">정답 확인</button>
+                <div id="q11result" class="result"></div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-title">12. **행동주의적 관점**에 따르면, 이상 행동은 외부 자극이나 환경과 ( <span class="fill-in-text">(빈칸)</span> )하게 연합되어 잘못 학습된 결과이다.</div>
+                <input type="text" id="q12input" placeholder="빈칸에 들어갈 단어 입력">
+                <button onclick="checkAnswer(12, '부적절')">정답 확인</button>
+                <div id="q12result" class="result"></div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-title">13. **인본주의적 관점**에 따르면, 이상 심리는 ( <span class="fill-in-text">(빈칸)</span> )적 자기와 현실적 자기의 차이 또는 자기실현 경향성 부족으로 발생한다.</div>
+                <input type="text" id="q13input" placeholder="빈칸에 들어갈 단어 입력">
+                <button onclick="checkAnswer(13, '이상')">정답 확인</button>
+                <div id="q13result" class="result"></div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-title">14. **사회·문화적 관점**은 이상 심리가 사회·문화적 규범에 의한 ( <span class="fill-in-text">(빈칸)</span> )적 상호작용의 부적응에서 발생한다고 본다.</div>
+                <input type="text" id="q14input" placeholder="빈칸에 들어갈 단어 입력">
+                <button onclick="checkAnswer(14, '사회문화')">정답 확인</button>
+                <div id="q14result" class="result"></div>
+            </div>
+        </div>
+        <a href="index.html">정상과 이상을 구분하는 기준</a>
+        <a href="강박 및 스트레스 관련 장애.html">강박 및 스트레스 관련 장애</a>
+    </div>
+
+</body>
+</html>
