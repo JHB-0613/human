@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>정신과 이상 구분 기준 퀴즈: 단답형 & 빈칸 채우기</title>
+    <style>
+        body { font-family: 'Malgun Gothic', '맑은 고딕', sans-serif; line-height: 1.6; padding: 20px; background-color: #f4f7f6; }
+        .quiz-container { max-width: 900px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
+        h1 { text-align: center; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-bottom: 30px; }
+        .quiz-section { margin-bottom: 40px; }
+        h2 { color: #3498db; border-bottom: 1px solid #dcdcdc; padding-bottom: 5px; margin-bottom: 20px; }
+        .question-box { margin-bottom: 20px; padding: 15px; border: 1px solid #dcdcdc; border-radius: 8px; background-color: #ecf0f1; }
+        .question-title { font-weight: bold; margin-bottom: 10px; font-size: 1.1em; color: #34495e; }
+        input[type="text"] { padding: 8px; border: 1px solid #bdc3c7; border-radius: 4px; width: 60%; max-width: 300px; margin-right: 10px; }
+        .fill-in-text { font-weight: bold; color: #e74c3c; background-color: #ffe0e0; padding: 2px 5px; border-radius: 3px; }
+        button { padding: 8px 15px; background-color: #2ecc71; color: white; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.3s; }
+        button:hover { background-color: #27ae60; }
+        .result { margin-top: 10px; padding: 10px; border-radius: 4px; display: none; }
+        .correct { background-color: #e6ffe6; color: #27ae60; border: 1px solid #27ae60; }
+        .incorrect { background-color: #ffe6e6; color: #c0392b; border: 1px solid #c0392b; }
+        .answer-text { font-weight: bold; }
+    </style>
+    <script>
+        // 입력값에서 띄어쓰기, 특수 문자, 소문자를 제거하여 비교 (강의 요구사항 반영)
+        function normalizeAnswer(answer) {
+            if (!answer) return "";
+            // '사회문화적 기준'의 경우 띄어쓰기/특수문자 제거 후에도 인식되도록 예외 처리
+            if (answer.replace(/[\s·]/g, '').toLowerCase() === '사회문화적기준') {
+                return '사회문화적기준';
+            }
+            return answer.replace(/[\s·]/g, '').toLowerCase();
+        }
+
+        function checkAnswer(qNum, correctAnswers) {
+            const inputElement = document.getElementById('q' + qNum + 'input');
+            const resultElement = document.getElementById('q' + qNum + 'result');
+            const userAnswer = normalizeAnswer(inputElement.value);
+            
+            // 정답 배열도 모두 Normalize
+            const correctArray = Array.isArray(correctAnswers) ? correctAnswers.map(normalizeAnswer) : [normalizeAnswer(correctAnswers)];
+
+            resultElement.style.display = 'block';
+
+            if (correctArray.includes(userAnswer)) {
+                resultElement.className = 'result correct';
+                resultElement.innerHTML = '✅ **정답입니다!**';
+            } else {
+                resultElement.className = 'result incorrect';
+                resultElement.innerHTML = '❌ **오답입니다.** 정답: <span class="answer-text">' + correctAnswers[0] + '</span>';
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <div class="quiz-container">
+        <h1>정신과 이상 구분 기준 퀴즈 (총 10문제)</h1>
+
+        <div class="quiz-section">
+            <h2>I. 단답형 문제 (순서 섞음)</h2>
+            
+            <div class="question-box">
+                <div class="question-title">1. 타인의 시선에서 관습이나 규범을 잘 따르는지(사회적 규범에 대한 적응)에 따라 이상을 판단하는 기준은?</div>
+                <input type="text" id="q1input" placeholder="정답 입력 (띄어쓰기 무관)">
+                <button onclick="checkAnswer(1, ['사회문화적 기준', '사회·문화적 기준'])">정답 확인</button>
+                <div id="q1result" class="result"></div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-title">2. 개인의 심리나 행동이 학업, 직업적, 사회적으로 적절하게 기능하는 것을 방해하는지 여부를 기준으로 이상을 판단하는 기준은 무엇입니까?</div>
+                <input type="text" id="q2input" placeholder="정답 입력 (띄어쓰기 무관)">
+                <button onclick="checkAnswer(2, '부적응 기준')">정답 확인</button>
+                <div id="q2result" class="result"></div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-title">3. 정상과 이상의 여부를 자신이 경험하는 주관적 고통이 있는지에 따라 판단하는 기준은 무엇입니까?</div>
+                <input type="text" id="q3input" placeholder="정답 입력 (띄어쓰기 무관)">
+                <button onclick="checkAnswer(3, '주관적 기준')">정답 확인</button>
+                <div id="q3result" class="result"></div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-title">4. 개인의 심리나 행동이 타인에 비해 평균에서 어느 정도 이탈되어 있는지(확률의 문제)에 근거하여 이상을 판단하는 기준은 무엇입니까?</div>
+                <input type="text" id="q4input" placeholder="정답 입력 (띄어쓰기 무관)">
+                <button onclick="checkAnswer(4, '통계적 기준')">정답 확인</button>
+                <div id="q4result" class="result"></div>
+            </div>
+            
+            <div class="question-box">
+                <div class="question-title">5. 정신건강 전문가가 면담, 관찰, 검사를 통해 최종적으로 이상 여부를 판단하는 기준은 무엇입니까?</div>
+                <input type="text" id="q5input" placeholder="정답 입력 (띄어쓰기 무관)">
+                <button onclick="checkAnswer(5, '전문적 기준')">정답 확인</button>
+                <div id="q5result" class="result"></div>
+            </div>
+        </div>
+
+        <div class="quiz-section">
+            <h2>II. 빈칸 채우기 문제 (개념 설명 중 빈칸)</h2>
+    
+            <div class="question-box">
+                <div class="question-title">6. **통계적 기준**이란, 개인의 심리나 행동이 타인에 비해 ( <span class="fill-in-text">(빈칸)</span> )에서 어느 정도 이탈되어 있는지에 근거하여 이상을 판단하는 것을 말한다.</div>
+                <input type="text" id="q6input" placeholder="빈칸에 들어갈 단어 입력">
+                <button onclick="checkAnswer(6, '평균')">정답 확인</button>
+                <div id="q6result" class="result"></div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-title">7. **부적응 기준**이란, 개인의 심리나 행동이 학업, 직업적, ( <span class="fill-in-text">(빈칸)</span> )적으로 적절하게 기능하는 것을 방해하는지 여부를 기준으로 삼는 것이다.</div>
+                <input type="text" id="q7input" placeholder="빈칸에 들어갈 단어 입력">
+                <button onclick="checkAnswer(7, '사회')">정답 확인</button>
+                <div id="q7result" class="result"></div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-title">8. **주관적 기준**이란, 정상과 이상의 여부를 자신이 경험하는 ( <span class="fill-in-text">(빈칸)</span> ) 고통이 있는지에 따라 판단하는 기준을 말한다.</div>
+                <input type="text" id="q8input" placeholder="빈칸에 들어갈 단어 입력">
+                <button onclick="checkAnswer(8, '주관적')">정답 확인</button>
+                <div id="q8result" class="result"></div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-title">9. **사회·문화적 기준**이란, 타인의 시선에서 관습이나 ( <span class="fill-in-text">(빈칸)</span> )을 잘 따르는지 여부에 따라 이상을 판단하는 기준을 말한다.</div>
+                <input type="text" id="q9input" placeholder="빈칸에 들어갈 단어 입력">
+                <button onclick="checkAnswer(9, '규범')">정답 확인</button>
+                <div id="q9result" class="result"></div>
+            </div>
+
+            <div class="question-box">
+                <div class="question-title">10. **전문적 기준**이란, ( <span class="fill-in-text">(빈칸)</span> ) 건강 전문가가 면담, 관찰, 검사를 통해 최종적으로 이상 여부를 판단하는 기준을 말한다.</div>
+                <input type="text" id="q10input" placeholder="빈칸에 들어갈 단어 입력">
+                <button onclick="checkAnswer(10, '정신')">정답 확인</button>
+                <div id="q10result" class="result"></div>
+            </div>
+        </div>
+            <a href="이상심리의 원인.html">이상심리의 원인</a>
+            <a href="인행심_객관식.html">객관식</a>            
+    </div>
+
+</body>
+
+</html>
+
