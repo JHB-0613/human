@@ -3,42 +3,331 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>정신과 이상 구분 기준 퀴즈: 단답형 & 빈칸 채우기</title>
+    <title>🧠 이상심리학 통합 퀴즈 (단답형 및 빈칸 채우기)</title>
     <style>
-        body { font-family: 'Malgun Gothic', '맑은 고딕', sans-serif; line-height: 1.6; padding: 20px; background-color: #f4f7f6; }
-        .quiz-container { max-width: 900px; margin: 0 auto; background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
-        h1 { text-align: center; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-bottom: 30px; }
-        .quiz-section { margin-bottom: 40px; }
-        h2 { color: #3498db; border-bottom: 1px solid #dcdcdc; padding-bottom: 5px; margin-bottom: 20px; }
-        .question-box { margin-bottom: 20px; padding: 15px; border: 1px solid #dcdcdc; border-radius: 8px; background-color: #ecf0f1; }
+        body { font-family: 'Malgun Gothic', '맑은 고딕', sans-serif; line-height: 1.6; padding: 20px; background-color: #f0f2f5; }
+        .container { max-width: 950px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); }
+        h1 { text-align: center; color: #1a73e8; margin-bottom: 30px; font-size: 2em; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; }
+        
+        /* Navigation Styles */
+        .quiz-navigation { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 30px; padding: 10px; border: 1px solid #dcdcdc; border-radius: 8px; background-color: #ecf0f1; }
+        .quiz-navigation button, .quiz-navigation a.btn { 
+            padding: 10px 15px; font-size: 0.9em; border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s; 
+            text-decoration: none; display: inline-block; font-weight: 500; 
+        }
+        .quiz-navigation button { background-color: #5bc0de; color: white; }
+        .quiz-navigation button:hover:not(.current-tab) { background-color: #31b0d5; }
+        .quiz-navigation button.current-tab { background-color: #007bff; font-weight: bold; }
+        .quiz-navigation a.btn { background-color: #2ecc71; color: white; margin-left: 15px; }
+        .quiz-navigation a.btn:hover { background-color: #27ae60; }
+
+        /* Quiz Section Styles */
+        .quiz-section { display: none; }
+        .quiz-section.active { display: block; }
+        
+        .section-title { color: #e74c3c; border-bottom: 1px solid #dcdcdc; padding-bottom: 5px; margin-bottom: 20px; font-size: 1.3em; }
+        .question-box { margin-bottom: 20px; padding: 15px; border: 1px solid #dcdcdc; border-radius: 8px; background-color: #fcfcfc; }
         .question-title { font-weight: bold; margin-bottom: 10px; font-size: 1.1em; color: #34495e; }
         input[type="text"] { padding: 8px; border: 1px solid #bdc3c7; border-radius: 4px; width: 60%; max-width: 300px; margin-right: 10px; }
         .fill-in-text { font-weight: bold; color: #e74c3c; background-color: #ffe0e0; padding: 2px 5px; border-radius: 3px; }
-        button { padding: 8px 15px; background-color: #2ecc71; color: white; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.3s; }
-        button:hover { background-color: #27ae60; }
+        
+        /* Button and Result Styles */
+        .check-btn { padding: 8px 15px; background-color: #2ecc71; color: white; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.3s; }
+        .check-btn:hover { background-color: #27ae60; }
         .result { margin-top: 10px; padding: 10px; border-radius: 4px; display: none; }
         .correct { background-color: #e6ffe6; color: #27ae60; border: 1px solid #27ae60; }
         .incorrect { background-color: #ffe6e6; color: #c0392b; border: 1px solid #c0392b; }
+        .warning { background-color: #fcf8e3; color: #8a6d3b; border: 1px solid #faebcc; }
         .answer-text { font-weight: bold; }
     </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>이상심리학 통합 퀴즈 모음 📝</h1>
+
+        <div class="quiz-navigation">
+            <button id="tab-1" class="current-tab" onclick="changeQuiz(1)">이상심리 원인</button>
+            <button id="tab-2" onclick="changeQuiz(2)">성격장애 진단</button>
+            <button id="tab-3" onclick="changeQuiz(3)">성격장애 군집</button>
+            <button id="tab-4" onclick="changeQuiz(4)">불안장애</button>
+            <button id="tab-5" onclick="changeQuiz(5)">강박/스트레스</button>
+            <button id="tab-6" onclick="changeQuiz(6)">우울장애</button>
+            <button id="tab-7" onclick="changeQuiz(7)">조현병 스펙트럼</button>
+            <button id="tab-8" onclick="changeQuiz(8)">신체증상 장애</button>
+            <button id="tab-9" onclick="changeQuiz(9)">아동/청소년 장애</button>
+            <a href="인행심_객관식.html" class="btn">객관식 문제 풀기</a>
+        </div>
+
+        <div id="quiz-area">
+            </div>
+    </div>
+
     <script>
-        // 입력값에서 띄어쓰기, 특수 문자, 소문자를 제거하여 비교 (강의 요구사항 반영)
+        // 모든 공백 문자(\s+)를 제거하고 소문자 변환
         function normalizeAnswer(answer) {
             if (!answer) return "";
-            // '사회문화적 기준'의 경우 띄어쓰기/특수문자 제거 후에도 인식되도록 예외 처리
-            if (answer.replace(/[\s·]/g, '').toLowerCase() === '사회문화적기준') {
-                return '사회문화적기준';
-            }
-            return answer.replace(/[\s·]/g, '').toLowerCase();
+            return answer.replace(/\s+/g, '').toLowerCase(); 
         }
 
-        function checkAnswer(qNum, correctAnswers) {
-            const inputElement = document.getElementById('q' + qNum + 'input');
-            const resultElement = document.getElementById('q' + qNum + 'result');
-            const userAnswer = normalizeAnswer(inputElement.value);
+        // 전체 퀴즈 데이터 정의
+        const quizData = {
+            1: {
+                title: "이상 심리의 원인 퀴즈",
+                sections: [
+                    { 
+                        title: "I. 단답형 문제 (관점/모델 명칭)", 
+                        questions: [
+                            { q: "이상 심리가 무의식적 내적 갈등이 상징적으로 나타난 것이라고 보는 관점은?", correct: ['정신역동적 관점'], display: '정신역동적 관점' },
+                            { q: "이상 행동은 학습의 영향, 즉 외부 자극과 부적절하게 연합(오학습)되어 나타난다고 보는 관점은?", correct: ['행동주의적 관점'], display: '행동주의적 관점' },
+                            { q: "이상적 자기와 현실적 자기의 차이, 자기실현 경향성이 부족하여 이상 심리가 나타난다고 보는 관점은?", correct: ['인본주의적 관점'], display: '인본주의적 관점' },
+                            { q: "이상 심리가 생물학적 취약성과 환경적 스트레스 간의 상호작용으로 인해 발생한다고 설명하는 모델은?", correct: ['취약성-스트레스 모델'], display: '취약성-스트레스 모델' },
+                            { q: "이상 심리가 외부 환경보다 내적 정보 처리 과정의 문제(왜곡)로 발생한다고 보는 관점은?", correct: ['인지주의적 관점'], display: '인지주의적 관점' },
+                            { q: "사회·문화적 규범에 의한 사회문화적 상호작용의 부적응에서 이상 심리가 발생한다고 보는 관점은?", correct: ['사회·문화적 관점'], display: '사회·문화적 관점' },
+                            { q: "이상 심리의 원인을 신체적 문제를 야기하는 신경전달물질의 불균형으로 설명하는 관점은?", correct: ['생물학적 관점'], display: '생물학적 관점' }
+                        ]
+                    },
+                    { 
+                        title: "II. 빈칸 채우기 문제 (개념 설명 중 빈칸)", 
+                        questions: [
+                            { q: "생물학적 관점은 이상 심리의 원인을 신체적 문제를 야기하는 ( <span class='fill-in-text'>(빈칸)</span> )의 불균형으로 설명한다.", correct: ['신경전달물질'], display: '신경전달물질' },
+                            { q: "정신역동적 관점에 따르면, 이상 심리는 ( <span class='fill-in-text'>(빈칸)</span> )적 내적 갈등이 표면으로 상징적으로 나타난 결과이다.", correct: ['무의식'], display: '무의식' },
+                            { q: "인지주의적 관점은 이상 심리의 원인을 외부 환경보다는 내적 ( <span class='fill-in-text'>(빈칸)</span> ) 과정의 문제로 인해 발생한다고 본다.", correct: ['정보 처리'], display: '정보 처리' },
+                            { q: "생물심리사회적 관점은 이상 심리가 ( <span class='fill-in-text'>(빈칸)</span> )성과 스트레스 간의 상호작용으로 인해 발생한다고 설명한다.", correct: ['취약성', '취약'], display: '취약성' },
+                            { q: "행동주의적 관점에 따르면, 이상 행동은 외부 자극이나 환경과 ( <span class='fill-in-text'>(빈칸)</span> )하게 연합되어 잘못 학습된 결과이다.", correct: ['부적절'], display: '부적절' },
+                            { q: "인본주의적 관점에 따르면, 이상 심리는 ( <span class='fill-in-text'>(빈칸)</span> )적 자기와 현실적 자기의 차이 또는 자기실현 경향성 부족으로 발생한다.", correct: ['이상'], display: '이상' },
+                            { q: "사회·문화적 관점은 이상 심리가 사회·문화적 규범에 의한 ( <span class='fill-in-text'>(빈칸)</span> )적 상호작용의 부적응에서 발생한다고 본다.", correct: ['사회문화'], display: '사회문화' }
+                        ]
+                    }
+                ]
+            },
+            2: {
+                title: "성격장애의 일반적인 진단 기준 퀴즈",
+                sections: [
+                    { 
+                        title: "I. 단답형 문제 (4가지 진단 기준 명칭)", 
+                        questions: [
+                            { q: "자신, 타인, 사건을 지각하고 해석하는 방식의 문제에 해당하는 진단 기준은?", correct: ['인지'], display: '인지' },
+                            { q: "'정서' 반응의 범위, 강도, 불안정성, 적절성의 문제에 해당하는 진단 기준은?", correct: ['정서'], display: '정서' },
+                            { q: "사람들과 상호작용이 어려운 문제에 해당하는 진단 기준은?", correct: ['대인관계'], display: '대인관계' },
+                            { q: "욕구를 적절하게 억제하기 어려운 문제에 해당하는 진단 기준은?", correct: ['충동 통제'], display: '충동 통제' }
+                        ]
+                    },
+                    { 
+                        title: "II. 빈칸 채우기 문제 (개념 설명 중 빈칸)", 
+                        questions: [
+                            { q: "성격장애 진단 기준에는 자신, 타인, 사건을 지각하고 해석하는 방식인 '( <span class='fill-in-text'>(빈칸)</span> )'의 문제가 포함된다.", correct: ['인지'], display: '인지' },
+                            { q: "성격장애는 '( <span class='fill-in-text'>(빈칸)</span> )' 반응의 범위, 강도, 불안정성, 적절성의 문제로 진단된다.", correct: ['정서'], display: '정서' },
+                            { q: "성격장애의 4가지 진단 기준에는 사람들과 상호작용이 어려운 '( <span class='fill-in-text'>(빈칸)</span> )'의 문제가 있다.", correct: ['대인관계'], display: '대인관계' },
+                            { q: "성격장애는 욕구를 적절하게 억제하기 어려운 '( <span class='fill-in-text'>(빈칸)</span> )'의 문제로 진단된다.", correct: ['충동 통제'], display: '충동 통제' }
+                        ]
+                    }
+                ]
+            },
+            3: {
+                title: "성격장애 군집 유형 퀴즈",
+                sections: [
+                    { 
+                        title: "I. 군집별 특징 및 하위 장애 명칭", 
+                        questions: [
+                            { q: "성격장애 A군의 주요 특징은 무엇입니까? (띄어쓰기 필수)", correct: ['특이하고 기이함'], display: '특이하고 기이함' },
+                            { q: "성격장애 B군의 주요 특징은 무엇입니까? (띄어쓰기 필수)", correct: ['극적이고 감정변화가 많음'], display: '극적이고 감정변화가 많음' },
+                            { q: "성격장애 C군의 주요 특징은 무엇입니까? (띄어쓰기 필수)", correct: ['불안하고 두려움이 많음'], display: '불안하고 두려움이 많음' },
+                            { q: "A군에 속하는 성격장애 중 하나로, 현실과 접촉이 어렵고 사고의 이상을 보이는 장애는?", correct: ['분열형성격장애'], display: '분열형 성격장애' },
+                            { q: "A군에 속하며, 타인을 지속적으로 불신하고 의심하는 특징을 보이는 장애는?", correct: ['편집성성격장애'], display: '편집성 성격장애' },
+                            { q: "B군에 속하며, 타인을 이용하고 조종하는 특징을 보이며 양심의 가책을 느끼지 못하는 장애는?", correct: ['반사회성성격장애'], display: '반사회성 성격장애' },
+                            { q: "B군에 속하며, 감정의 불안정성과 버림받는 것에 대한 두려움이 주된 특징인 장애는?", correct: ['경계성성격장애'], display: '경계성 성격장애' },
+                            { q: "B군에 속하며, 과도한 관심을 요구하고 극적인 감정 표현을 하는 장애는?", correct: ['연극성성격장애'], display: '연극성 성격장애' },
+                            { q: "B군에 속하며, 자신에 대한 과대평가와 타인의 공감 결여가 주된 특징인 장애는?", correct: ['자기애성성격장애'], display: '자기애성 성격장애' },
+                            { q: "C군에 속하며, 거부당할까 두려워 사회적 상황을 피하는 특징을 보이는 장애는?", correct: ['회피성성격장애'], display: '회피성 성격장애' },
+                            { q: "C군에 속하며, 타인에게 과도하게 의존하고 스스로 결정을 내리지 못하는 장애는?", correct: ['의존성성격장애'], display: '의존성 성격장애' },
+                            { q: "C군에 속하며, 완벽주의, 과도한 조심성, 융통성 결여가 특징인 장애는?", correct: ['강박성성격장애'], display: '강박성 성격장애' },
+                            { q: "A군에 속하는 세 가지 하위 장애 중, 정서적 냉담함과 대인관계 회피를 특징으로 하는 장애는?", correct: ['분열성성격장애'], display: '분열성 성격장애' }
+                        ]
+                    }
+                ]
+            },
+            4: {
+                title: "불안장애 퀴즈",
+                sections: [
+                    { 
+                        title: "I. 단답형 문제 (정확한 장애 명칭)", 
+                        questions: [
+                            { q: "일상 생활의 많은 부분에 대해 이유 없는 불안을 느끼는 장애는?", correct: ['범불안장애'], display: '범불안장애' },
+                            { q: "사회공포증이라고도 불리며, 타인에게 노출되는 상황에 대한 극도의 공포를 느끼는 장애는?", correct: ['사회불안장애'], display: '사회불안장애' },
+                            { q: "죽을 것 같은 공포와 함께 공황발작이 반복적으로 발생하는 장애는?", correct: ['공황장애'], display: '공황장애' },
+                            { q: "바늘, 곤충, 자연환경 등 특정한 대상이나 상황에 대해서만 공포를 느끼는 장애는?", correct: ['특정공포증'], display: '특정공포증' },
+                            { q: "일반적이지만 안전하지 않다고 느끼는 공간(예: 넓은 광장, 대중교통)에서 공포를 느껴 피하려는 장애는?", correct: ['광장공포증'], display: '광장공포증' }
+                        ]
+                    },
+                    { 
+                        title: "II. 빈칸 채우기 문제 (개념 설명 중 빈칸)", 
+                        questions: [
+                            { q: "공황장애는 죽을 것 같은 공포 등으로 인해 ( <span class='fill-in-text'>(빈칸)</span> )이 반복적으로 나타난다.", correct: ['공황발작'], display: '공황발작' },
+                            { q: "광장공포증은 일반적이지만 ( <span class='fill-in-text'>(빈칸)</span> )다고 느끼는 공간에서 공포가 발생한다.", correct: ['안전하지 않'], display: '안전하지 않' },
+                            { q: "특정공포증은 바늘, 곤충, 자연환경 등 ( <span class='fill-in-text'>(빈칸)</span> ) 대상에 대한 공포를 느낀다.", correct: ['특정'], display: '특정' },
+                            { q: "사회불안장애는 타인에게 ( <span class='fill-in-text'>(빈칸)</span> )되는 상황에 대한 공포를 느낀다.", correct: ['노출'], display: '노출' },
+                            { q: "범불안장애는 일상 생활의 많은 부분에 대해 ( <span class='fill-in-text'>(빈칸)</span> ) 불안을 느낀다.", correct: ['이유없는'], display: '이유 없는' }
+                        ]
+                    }
+                ]
+            },
+            5: {
+                title: "강박 및 스트레스 관련 장애 퀴즈",
+                sections: [
+                    { 
+                        title: "I. 단답형 문제 (정확한 용어)", 
+                        questions: [
+                            { q: "통제할 수 없고 원치 않는 침투적인 생각, 이미지, 충동이 반복적으로 떠올라 불안을 일으키는 강박장애의 인지적 요소는?", correct: ['강박사고'], display: '강박사고' },
+                            { q: "강박적인 생각 때문에 유발된 불안을 줄이거나 두려운 상황 발생을 막기 위해 반복적으로 수행하는 행위는?", correct: ['강박행동'], display: '강박행동' },
+                            { q: "외상이나 스트레스 사건을 경험한 이후 다양한 증상으로 인해 일상생활에 심각한 손상을 겪는 장애의 명칭은?", correct: ['외상 후 스트레스 장애'], display: '외상 후 스트레스 장애' },
+                            { q: "외상 후 스트레스 장애의 4개 범주 증상 중, 트라우마 관련 자극을 피하는 증상 범주를 무엇이라고 하는가?", correct: ['자극 회피'], display: '자극 회피' },
+                            { q: "강박장애의 강박적 행동의 목적으로, 불안을 감소시키는 것 외에 두려운 상황의 무엇을 방지하고자 하는가?", correct: ['상황 발생'], display: '상황 발생' },
+                            { q: "외상 후 스트레스 장애의 4개 증상 범주 중, 과도한 경계, 놀람 반응 등으로 나타나는 증상 범주는?", correct: ['각성과 반응의 변화'], display: '각성과 반응의 변화' }
+                        ]
+                    },
+                    { 
+                        title: "II. 빈칸 채우기 문제 (개념 설명 중 빈칸)", 
+                        questions: [
+                            { q: "강박장애는 통제하지 못하고 집착하는 ( <span class='fill-in-text'>(빈칸)</span> ) 또는 강박행동을 특징으로 한다.", correct: ['강박사고'], display: '강박사고' },
+                            { q: "강박적 행동의 주된 목적은 ( <span class='fill-in-text'>(빈칸)</span> )을 감소시키거나 두려운 상황이 발생하는 것을 방지하는 것이다.", correct: ['불안'], display: '불안' },
+                            { q: "외상 후 스트레스 장애는 외상 사건을 반복적으로 ( <span class='fill-in-text'>(빈칸)</span> ) 생각(플래시백)이나 악몽으로 경험하는 증상을 포함한다.", correct: ['침투'], display: '침투' },
+                            { q: "외상 후 스트레스 장애의 증상 범주 중, 외상과 관련된 생각, 사람, 장소를 의도적으로 피하려는 경향은 ( <span class='fill-in-text'>(빈칸)</span> )에 해당한다.", correct: ['자극회피'], display: '자극회피' },
+                            { q: "외상 후 스트레스 장애는 외상 경험 이후 인지와 ( <span class='fill-in-text'>(빈칸)</span> )에 부정적인 변화가 발생하는 증상을 보인다.", correct: ['정서'], display: '정서' },
+                            { q: "강박장애는 생각, 충동, 행동을 ( <span class='fill-in-text'>(빈칸)</span> )하지 못하고 집착하여 일상생활 적응이 어려워지는 장애이다.", correct: ['억제'], display: '억제' }
+                        ]
+                    }
+                ]
+            },
+            6: {
+                title: "우울장애 퀴즈",
+                sections: [
+                    { 
+                        title: "I. 단답형 문제 (핵심 개념)", 
+                        questions: [
+                            { q: "우울장애의 인지적 왜곡 중, 모든 일을 두 가지 극단적인 범주(흑 또는 백)로만 보는 사고방식은?", correct: ['이분법적 사고'], display: '이분법적 사고' },
+                            { q: "우울증과 관련하여 균형이 깨지기 쉬운 두 가지 주요 신경전달물질 중 하나는 세로토닌이며, 다른 하나는 무엇인가?", correct: ['노르에피네프린'], display: '노르에피네프린' },
+                            { q: "Beck의 인지 삼제 중, 우울증 환자가 자신의 능력이나 가치에 대해 부정적으로 평가하는 영역은?", correct: ['자신'], display: '자신' },
+                            { q: "우울장애의 주요 감정 변화 중, 공허함, 과민한 기분 외에 가장 핵심적인 감정은?", correct: ['슬픔'], display: '슬픔' },
+                            { q: "우울증 환자가 한 번의 부정적인 사건을 근거로 모든 상황에 일반화하여 부정적으로 보는 인지적 왜곡은?", correct: ['과잉일반화'], display: '과잉일반화' },
+                            { q: "우울장애와 양극성 장애를 통틀어 기분이 양쪽 극단인 조증과 우울증이 교차 발생하는 장애의 명칭은?", correct: ['양극성장애'], display: '양극성장애' },
+                            { q: "우울증 환자가 외부의 부정적인 사건을 자신과 무관함에도 불구하고 자신의 책임으로 돌리는 인지적 왜곡은?", correct: ['개인화'], display: '개인화' }
+                        ]
+                    },
+                    { 
+                        title: "II. 빈칸 채우기 문제 (개념 설명 중 빈칸)", 
+                        questions: [
+                            { q: "우울장애의 인지적 변화는 ( <span class='fill-in-text'>(빈칸)</span> )적, 신체적 변화가 동반되어 일상 기능에 부정적 영향을 미친다.", correct: ['인지'], display: '인지' },
+                            { q: "우울증의 원인으로, 긍정적인 ( <span class='fill-in-text'>(빈칸)</span> )이 충분히 주어지지 않아 발생한다고 보는 행동주의적 입장이 있다.", correct: ['강화'], display: '강화' },
+                            { q: "Beck의 인지 삼제 중, 세상에 대한 부정적인 경험을 일반화하여 보는 영역은 ( <span class='fill-in-text'>(빈칸)</span> )이다.", correct: ['세상'], display: '세상' },
+                            { q: "우울증 환자가 자신의 미래 전망에 대해 부정적인 예측을 하는 Beck의 인지 삼제 영역은 ( <span class='fill-in-text'>(빈칸)</span> )이다.", correct: ['미래'], display: '미래' },
+                            { q: "우울장애가 나타나는 기간 동안에는 항상 ( <span class='fill-in-text'>(빈칸)</span> ) 행동의 위험이 잠재되어 있다.", correct: ['자살'], display: '자살' },
+                            { q: "양극성 및 관련 장애는 기분의 양쪽 극단인 ( <span class='fill-in-text'>(빈칸)</span> )(경조증)과 우울증이 교차 발생한다.", correct: ['조증'], display: '조증' },
+                            { q: "우울장애의 관련 요인 중, 통제할 수 없는 환경에 반복 노출되어 무기력해지는 것은 ( <span class='fill-in-text'>(빈칸)</span> )과 관련이 있다.", correct: ['무기력'], display: '무기력' }
+                        ]
+                    }
+                ]
+            },
+            7: {
+                title: "조현병 스펙트럼 장애 퀴즈",
+                sections: [
+                    { 
+                        title: "I. 단답형 문제 (주요 증상 및 개념)", 
+                        questions: [
+                            { q: "조현병의 증상 중, 실제로 현실에 없는 것을 지각하는 현상으로, 자신이 경험하는 것이 현실인지 판단하기 어려운 것은?", correct: ['환각'], display: '환각' },
+                            { q: "조현병의 증상 중, 잘못된 믿음을 강하게 고수하며 논리적 반박이 불가능한 현상은? (예: 피해망상, 과대망상)", correct: ['망상'], display: '망상' },
+                            { q: "조현병의 '음성 증상' 중 하나로, 정서적 표현의 감소를 의미하는 용어는?", correct: ['정서표현감소'], display: '정서표현감소' },
+                            { q: "조현병의 '음성 증상' 중 하나로, 즐거움을 느끼지 못하는 상태를 의미하는 용어는?", correct: ['무쾌감증'], display: '무쾌감증' },
+                            { q: "조현병의 증상 중, 비논리적인 언어를 사용하는 것으로 '지리멸렬'이 여기에 해당하는 증상 범주는?", correct: ['혼란된 사고 또는 언어'], display: '혼란된 사고 또는 언어' },
+                            { q: "조현병의 '음성 증상' 중 하나로, 목표 지향적인 활동을 시작하고 수행하는 능력의 감소를 의미하는 용어는?", correct: ['무욕증'], display: '무욕증' }
+                        ]
+                    },
+                    { 
+                        title: "II. 빈칸 채우기 문제 (개념 설명 중 빈칸)", 
+                        questions: [
+                            { q: "조현병의 양성 증상 중 하나인 ( <span class='fill-in-text'>(빈칸)</span> )은 과대망상, 피해망상, 관계망상 등이 있다.", correct: ['망상'], display: '망상' },
+                            { q: "조현병의 음성 증상에는 무욕증, 무언증, 무쾌감증, 비사회성, 그리고 ( <span class='fill-in-text'>(빈칸)</span> ) 감소가 포함된다.", correct: ['정서표현'], display: '정서표현' },
+                            { q: "조현병 환자가 대화 주제에서 벗어나는 것을 의미하는 혼란된 언어 증상은 ( <span class='fill-in-text'>(빈칸)</span> )이다.", correct: ['이탈'], display: '이탈' },
+                            { q: "조현병의 원인 가설 중 가장 잘 알려진 것은 신경전달물질과 관련된 ( <span class='fill-in-text'>(빈칸)</span> ) 가설이다.", correct: ['도파민'], display: '도파민' },
+                            { q: "조현병의 음성 증상 중, 말의 양이 감소하거나 언어 사용이 어려워지는 현상은 ( <span class='fill-in-text'>(빈칸)</span> )에 해당한다.", correct: ['무언증'], display: '무언증' },
+                            { q: "조현병의 증상은 환각, 망상과 같이 정상인에게 없는 것이 추가되는 ( <span class='fill-in-text'>(빈칸)</span> ) 증상과, 있어야 할 기능이 감소된 음성 증상으로 나뉜다.", correct: ['양성'], display: '양성' }
+                        ]
+                    }
+                ]
+            },
+            8: {
+                title: "신체증상 및 관련 장애 퀴즈",
+                sections: [
+                    { 
+                        title: "I. 단답형 문제 (정확한 장애 명칭 또는 개념)", 
+                        questions: [
+                            { q: "내면의 심리적 불안이 실제로 신체적인 증상으로 나타나는 장애는?", correct: ['신체증상장애'], display: '신체증상장애' },
+                            { q: "건강염려증이라고도 불리며, 실제 신체질환 증상이 없음에도 불구하고 자신이 심각한 병에 걸렸다고 과도하게 염려하는 장애는?", correct: ['질병불안장애'], display: '질병불안장애' },
+                            { q: "심리적 문제가 신체를 통해 표출되는 신체증상 및 관련 장애의 주요 특징은?", correct: ['내면의 문제가 신체를 통해 표출'], display: '내면의 문제가 신체를 통해 표출' },
+                            { q: "신체증상 및 관련 장애의 하위 유형 중, 허위로 질환을 꾸며내는 장애는?", correct: ['허위성장애'], display: '허위성장애' },
+                            { q: "심리적 문제가 하나의 신체 증상으로 나타나는 장애로, 과거 히스테리라고 불리기도 했던 장애는?", correct: ['전환장애'], display: '전환장애' }
+                        ]
+                    },
+                    { 
+                        title: "II. 빈칸 채우기 문제 (개념 설명 중 빈칸)", 
+                        questions: [
+                            { q: "신체증상장애는 심리적 불안으로 인해 실제로 ( <span class='fill-in-text'>(빈칸)</span> )이 발생한다.", correct: ['신체증상'], display: '신체증상' },
+                            { q: "질병불안장애 (건강염려증)는 실제 신체질환 증상이 ( <span class='fill-in-text'>(빈칸)</span> )에도 불구하고 자신이 심각한 병에 걸렸다고 염려한다.", correct: ['없음', '없는'], display: '없음' },
+                            { q: "신체증상 및 관련 장애는 해소되지 못한 ( <span class='fill-in-text'>(빈칸)</span> )의 문제가 신체를 통해 표출되는 양상을 보인다.", correct: ['내면'], display: '내면' },
+                            { q: "전환 장애는 ( <span class='fill-in-text'>(빈칸)</span> )증상으로 나타나는 신체증상 장애의 하위 유형이다.", correct: ['단일'], display: '단일' },
+                            { q: "신체증상 및 관련 장애는 신체증상장애, 질병불안장애, 전환 장애, ( <span class='fill-in-text'>(빈칸)</span> ) 장애를 포함한다.", correct: ['허위성'], display: '허위성' }
+                        ]
+                    }
+                ]
+            },
+            9: {
+                title: "아동기 및 청소년기 장애 퀴즈",
+                sections: [
+                    { 
+                        title: "I. 단답형 문제 (정확한 장애 명칭 또는 특징)", 
+                        questions: [
+                            { q: "부주의와 과잉행동-충동성이 핵심 증상인 장애의 명칭은?", correct: ['주의력결핍/과잉행동장애'], display: '주의력결핍/과잉행동장애' },
+                            { q: "사회적 의사소통과 상호작용의 어려움, 제한적이고 반복적인 형태의 행동이 주된 특징인 장애는?", correct: ['자폐스펙트럼장애'], display: '자폐스펙트럼장애' },
+                            { q: "학령전기 아동에게 나타나기 쉬우며, 애착 대상과 떨어져 있는 것에 대해 과도한 불안과 공포를 느끼는 장애는?", correct: ['분리불안장애'], display: '분리불안장애' },
+                            { q: "적대적 반항장애의 세 가지 범주 중, 어른이나 권위 있는 대상과 논쟁하고 규칙에 반항하는 범주는?", correct: ['행동범주'], display: '행동범주' },
+                            { q: "적대적 반항장애의 세 가지 범주 중, 화, 과민, 짜증, 분노를 표출하는 범주는?", correct: ['기분범주'], display: '기분범주' },
+                            { q: "주의력결핍/과잉행동장애(ADHD)의 세 가지 유형 중 하나로, 부주의와 과잉행동-충동성이 모두 나타나는 유형은?", correct: ['혼합형'], display: '혼합형' }
+                        ]
+                    },
+                    { 
+                        title: "II. 빈칸 채우기 문제 (개념 설명 중 빈칸)", 
+                        questions: [
+                            { q: "자폐 스펙트럼 장애는 사회적 의사소통과 상호작용의 어려움 및 제한적이고 ( <span class='fill-in-text'>(빈칸)</span> ) 형태의 행동, 흥미, 활동을 특징으로 한다.", correct: ['반복적인'], display: '반복적인' },
+                            { q: "주의력결핍/과잉행동장애의 핵심 증상은 부주의와 ( <span class='fill-in-text'>(빈칸)</span> )-충동성이다.", correct: ['과잉행동'], display: '과잉행동' },
+                            { q: "분리불안장애는 학령전기 아동에게 흔하며, 애착 대상과 ( <span class='fill-in-text'>(빈칸)</span> ) 있는 것에 대해 과도한 불안을 느낀다.", correct: ['떨어져'], display: '떨어져' },
+                            { q: "적대적 반항장애는 기분 범주 외에 ( <span class='fill-in-text'>(빈칸)</span> ) 범주와 복수심 범주로 나뉜다.", correct: ['행동'], display: '행동' },
+                            { q: "주의력결핍/과잉행동장애의 세 가지 유형은 부주의 우세형, 과잉행동-충동성 우세형, 그리고 ( <span class='fill-in-text'>(빈칸)</span> )이다.", correct: ['혼합형'], display: '혼합형' },
+                            { q: "적대적 반항장애의 세 가지 범주 중, 악의적인 복수심을 표출하는 범주는 ( <span class='fill-in-text'>(빈칸)</span> ) 범주이다.", correct: ['복수심'], display: '복수심' }
+                        ]
+                    }
+                ]
+            }
+        };
+
+        let currentQuizId = 1;
+
+        function checkAnswer(quizId, questionIndex, inputId) {
+            const inputElement = document.getElementById(inputId);
+            const resultElement = document.getElementById('result-' + inputId);
+            const rawUserValue = inputElement.value.trim();
             
-            // 정답 배열도 모두 Normalize
-            const correctArray = Array.isArray(correctAnswers) ? correctAnswers.map(normalizeAnswer) : [normalizeAnswer(correctAnswers)];
+            const questionData = quizData[quizId].sections.flatMap(sec => sec.questions)[questionIndex];
+            
+            if (rawUserValue === '') {
+                resultElement.style.display = 'block';
+                resultElement.className = 'result warning';
+                resultElement.innerHTML = '⚠️ **입력값이 비어 있습니다. 정답을 입력해 주세요.**';
+                return;
+            }
+            
+            const userAnswer = normalizeAnswer(rawUserValue);
+            const correctArray = questionData.correct.map(normalizeAnswer);
+            const displayAnswer = questionData.display;
 
             resultElement.style.display = 'block';
 
@@ -47,98 +336,51 @@
                 resultElement.innerHTML = '✅ **정답입니다!**';
             } else {
                 resultElement.className = 'result incorrect';
-                resultElement.innerHTML = '❌ **오답입니다.** 정답: <span class="answer-text">' + correctAnswers[0] + '</span>';
+                resultElement.innerHTML = '❌ **오답입니다.** 정답: <span class="answer-text">' + displayAnswer + '</span>';
             }
         }
+
+        function renderQuiz(quizId) {
+            const data = quizData[quizId];
+            let html = `<h1>${data.title}</h1>`;
+            let globalQIndex = 0;
+
+            data.sections.forEach(section => {
+                html += `<h2 class="section-title">${section.title}</h2>`;
+                section.questions.forEach((q, localIndex) => {
+                    const inputId = `q${quizId}-${globalQIndex}`;
+                    const questionNumber = globalQIndex + 1;
+                    
+                    html += `
+                        <div class="question-box">
+                            <div class="question-title">${questionNumber}. ${q.q}</div>
+                            <input type="text" id="${inputId}" placeholder="정답 입력 (띄어쓰기 무관)" onkeypress="if(event.key==='Enter') checkAnswer(${quizId}, ${globalQIndex}, '${inputId}')">
+                            <button class="check-btn" onclick="checkAnswer(${quizId}, ${globalQIndex}, '${inputId}')">정답 확인</button>
+                            <div id="result-${inputId}" class="result"></div>
+                        </div>
+                    `;
+                    globalQIndex++;
+                });
+            });
+
+            document.getElementById('quiz-area').innerHTML = html;
+        }
+
+        function changeQuiz(quizId) {
+            // Update tabs
+            const tabs = document.querySelectorAll('.quiz-navigation button');
+            tabs.forEach(tab => tab.classList.remove('current-tab'));
+            document.getElementById(`tab-${quizId}`).classList.add('current-tab');
+            
+            currentQuizId = quizId;
+            renderQuiz(quizId);
+        }
+
+        // Initialize quiz on load
+        window.onload = function() {
+            changeQuiz(currentQuizId);
+        };
     </script>
-</head>
-<body>
-
-    <div class="quiz-container">
-        <h1>정신과 이상 구분 기준 퀴즈 (총 10문제)</h1>
-
-        <div class="quiz-section">
-            <h2>I. 단답형 문제 (순서 섞음)</h2>
-            
-            <div class="question-box">
-                <div class="question-title">1. 타인의 시선에서 관습이나 규범을 잘 따르는지(사회적 규범에 대한 적응)에 따라 이상을 판단하는 기준은?</div>
-                <input type="text" id="q1input" placeholder="정답 입력 (띄어쓰기 무관)">
-                <button onclick="checkAnswer(1, ['사회문화적 기준', '사회·문화적 기준'])">정답 확인</button>
-                <div id="q1result" class="result"></div>
-            </div>
-
-            <div class="question-box">
-                <div class="question-title">2. 개인의 심리나 행동이 학업, 직업적, 사회적으로 적절하게 기능하는 것을 방해하는지 여부를 기준으로 이상을 판단하는 기준은 무엇입니까?</div>
-                <input type="text" id="q2input" placeholder="정답 입력 (띄어쓰기 무관)">
-                <button onclick="checkAnswer(2, '부적응 기준')">정답 확인</button>
-                <div id="q2result" class="result"></div>
-            </div>
-
-            <div class="question-box">
-                <div class="question-title">3. 정상과 이상의 여부를 자신이 경험하는 주관적 고통이 있는지에 따라 판단하는 기준은 무엇입니까?</div>
-                <input type="text" id="q3input" placeholder="정답 입력 (띄어쓰기 무관)">
-                <button onclick="checkAnswer(3, '주관적 기준')">정답 확인</button>
-                <div id="q3result" class="result"></div>
-            </div>
-
-            <div class="question-box">
-                <div class="question-title">4. 개인의 심리나 행동이 타인에 비해 평균에서 어느 정도 이탈되어 있는지(확률의 문제)에 근거하여 이상을 판단하는 기준은 무엇입니까?</div>
-                <input type="text" id="q4input" placeholder="정답 입력 (띄어쓰기 무관)">
-                <button onclick="checkAnswer(4, '통계적 기준')">정답 확인</button>
-                <div id="q4result" class="result"></div>
-            </div>
-            
-            <div class="question-box">
-                <div class="question-title">5. 정신건강 전문가가 면담, 관찰, 검사를 통해 최종적으로 이상 여부를 판단하는 기준은 무엇입니까?</div>
-                <input type="text" id="q5input" placeholder="정답 입력 (띄어쓰기 무관)">
-                <button onclick="checkAnswer(5, '전문적 기준')">정답 확인</button>
-                <div id="q5result" class="result"></div>
-            </div>
-        </div>
-
-        <div class="quiz-section">
-            <h2>II. 빈칸 채우기 문제 (개념 설명 중 빈칸)</h2>
-    
-            <div class="question-box">
-                <div class="question-title">6. **통계적 기준**이란, 개인의 심리나 행동이 타인에 비해 ( <span class="fill-in-text">(빈칸)</span> )에서 어느 정도 이탈되어 있는지에 근거하여 이상을 판단하는 것을 말한다.</div>
-                <input type="text" id="q6input" placeholder="빈칸에 들어갈 단어 입력">
-                <button onclick="checkAnswer(6, '평균')">정답 확인</button>
-                <div id="q6result" class="result"></div>
-            </div>
-
-            <div class="question-box">
-                <div class="question-title">7. **부적응 기준**이란, 개인의 심리나 행동이 학업, 직업적, ( <span class="fill-in-text">(빈칸)</span> )적으로 적절하게 기능하는 것을 방해하는지 여부를 기준으로 삼는 것이다.</div>
-                <input type="text" id="q7input" placeholder="빈칸에 들어갈 단어 입력">
-                <button onclick="checkAnswer(7, '사회')">정답 확인</button>
-                <div id="q7result" class="result"></div>
-            </div>
-
-            <div class="question-box">
-                <div class="question-title">8. **주관적 기준**이란, 정상과 이상의 여부를 자신이 경험하는 ( <span class="fill-in-text">(빈칸)</span> ) 고통이 있는지에 따라 판단하는 기준을 말한다.</div>
-                <input type="text" id="q8input" placeholder="빈칸에 들어갈 단어 입력">
-                <button onclick="checkAnswer(8, '주관적')">정답 확인</button>
-                <div id="q8result" class="result"></div>
-            </div>
-
-            <div class="question-box">
-                <div class="question-title">9. **사회·문화적 기준**이란, 타인의 시선에서 관습이나 ( <span class="fill-in-text">(빈칸)</span> )을 잘 따르는지 여부에 따라 이상을 판단하는 기준을 말한다.</div>
-                <input type="text" id="q9input" placeholder="빈칸에 들어갈 단어 입력">
-                <button onclick="checkAnswer(9, '규범')">정답 확인</button>
-                <div id="q9result" class="result"></div>
-            </div>
-
-            <div class="question-box">
-                <div class="question-title">10. **전문적 기준**이란, ( <span class="fill-in-text">(빈칸)</span> ) 건강 전문가가 면담, 관찰, 검사를 통해 최종적으로 이상 여부를 판단하는 기준을 말한다.</div>
-                <input type="text" id="q10input" placeholder="빈칸에 들어갈 단어 입력">
-                <button onclick="checkAnswer(10, '정신')">정답 확인</button>
-                <div id="q10result" class="result"></div>
-            </div>
-        </div>
-            <a href="이상심리의 원인.html">이상심리의 원인</a>
-            <a href="인행심_객관식.html">객관식</a>            
-    </div>
 
 </body>
-
 </html>
-
